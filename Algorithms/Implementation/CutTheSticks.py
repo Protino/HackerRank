@@ -1,8 +1,6 @@
 useless = input()
 sticks = list(map(int,input().split()))
-while(len(sticks)!=0):
+while len(sticks):
+    print (len(sticks))
     smallest=min(sticks)
-    sticks=[x-smallest for x in sticks]
-    print(len(sticks))
-    sticks=[x for x in sticks if x!=0]
-	
+    sticks=[x-smallest for x in sticks if x-smallest!=0]
