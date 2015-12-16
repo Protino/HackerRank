@@ -17,15 +17,19 @@ def primeSum(n):
         q=n-p
         if(p>q):
             break
-        if {q} & pset:
+        if(q in primes):
             out.extend([p,q])
-    print(n, "has", round(len(out) / 2), "representation(s)")
-    results = ("{}+{}".format(i, j) for i, j in zip(out[0::2], out[1::2]))
-    print('\n'.join(results))
 
 pset = set(sieve(32000))
 primes = sorted(pset)
-for __ in range(int(input())):
+
+total = 0
+
+for i in range(int(input())):
     out = []
     primeSum(int(input()))
-    print("")
+    print (i,"has",round(len(out)/2),"representation(s)")
+    results = ("{}+{}".format(i, j) for i, j in zip(out[0::2], out[1::2]))
+    print ('\n'.join(results))
+    print ("")
+
