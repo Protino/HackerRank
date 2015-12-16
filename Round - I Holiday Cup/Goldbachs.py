@@ -23,12 +23,11 @@ def primeSum(n):
 pset = set(sieve(32000))
 primes = sorted(pset)
 
-total = 0
-
 for i in range(int(input())):
     out = []
-    primeSum(int(input()))
-    print (i,"has",round(len(out)/2),"representation(s)")
+    n = int(input());
+    primeSum(n)
+    print (n,"has",round(len(out)/2),"representation(s)")
     results = ("{}+{}".format(i, j) for i, j in zip(out[0::2], out[1::2]))
     print ('\n'.join(results))
     print ("")
