@@ -19,8 +19,19 @@ for __ in range(int(input())):
     while (leftPanWt!=rightPanWt):
         add = 3 ** expo
         if(rightPanWt<leftPanWt):
-            rightPan.append(add)
-            rightPanWt+=add
+            try:
+                length=len(rightPan)-1
+                lastElement = rightPan[length]
+                if(lastElement==add):
+                    rightPan[length]=rightPan[length]+add
+                    rightPanWt+=add 
+                else:
+                    rightPan.append(add)
+                    rightPanWt+=add    
+            except:
+                rightPan.append(add)
+                rightPanWt+=add
+            
         else:
             leftPan.append(add)
             leftPanWt+=add

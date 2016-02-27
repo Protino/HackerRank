@@ -20,7 +20,7 @@ def primeSum(n):
         if(q in primes):
             out.extend([p,q])
 
-pset = set(sieve(32000))
+pset = list(sieve(32000))
 primes = sorted(pset)
 
 for i in range(int(input())):

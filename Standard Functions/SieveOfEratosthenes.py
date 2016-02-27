@@ -1,5 +1,6 @@
 def eratosthenes(n):
-    """ Returns primes in range 2 to n inclusive """
+    """ Returns list of primes
+    in range 2 to n inclusive """
     multiples = set()
     for i in range(2, n+1):
         if i not in multiples:
