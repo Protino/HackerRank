@@ -1,0 +1,158 @@
+Editorial is filled with fancy-pants math all over the place.
+
+TL;DR
+
+This is how I solved it. (I suppose editorial's approach is the same too).
+
+Looking for a pattern is the key thing to solve this problem. 
+
+Let's take the test case `1 3 6 7` itself.
+
+Now 'Pieces' are:
+
+```
+[(1),(3),(6),(7)]
+[(1,3),(6),(7)]
+[(1),(3,6),(7)]
+[(1),(3),(6,7)]
+[(1,3,6),(7)]
+[(1,3),(6,7)]
+[(1),(3,6,7)]
+[(1,3,6,7)]
+```
+Now, count contributions of each number in the 'pieces'.
+For example, in pair `(1,3)`, `1` and `3` contribute twice.
+in pair `(1,3,6)`, `1``2`and`3` contribute thrice.
+
+We are calculating in this manner because we want to know how much amount of value is each number contributing to the final sum.
+
+So these are the final contribution count values for the above test case.
+
+```
+1 - 15
+3 - 18
+6 - 18
+7 - 15
+```
+
+Verfiy, final sum - (1*15)+(3*18)+(6*18)+(7*15) = 282
+
+
+Ah ha, there is some pattern visible now.
+
+```
+---------------------
+| 15 | 18 | 18 | 15 |
+--------------------- 
+  ^     ^   ^     ^
+  |     |___|     |
+  |_______________|
+
+```
+
+Also, 
+15 in binary - 1111  (pretty)
+18 in binary - 10010 (not pretty)
+
+Try doing for n=5 on paper. These are the final count values.
+
+```
+--------------------------
+| 31 | 38 | 40 | 38 | 31 |
+--------------------------
+```
+
+Ah ha, the earlier pattern holds (a bit).
+
+31 in binary - 11111
+38 - 31+7 (hmmm, earlier case it was +3 now it's +7,I see something. But let's looks further)
+40 - 38+2 (Ugh, +2? sob sob, Let's look for n=6)
+
+
+Try doing for n=6 on paper (Don't !).
+
+Count values :
+
+```
+-------------------------------
+| 63 | 78 | 84 | 84 | 78 | 63 |
+-------------------------------
+```
+
+63 in binary - 111111
+78 - 63+15 (+3 , +7 , now + 15 ,prettay prettay)
+84 - 78+6 (+6? nooooo, umm, ok let's move on)
+
+Count values for n=7:
+
+```
+-------------------------------------------
+| 127 | 158 | 172 | 176 | 172 | 158 | 127 |
+-------------------------------------------
+
+
+127 in binary - 1111111
+158 - 127+31
+172 - 158+14 
+176 - 172+4
+
+```
+
+Let's look at binary representation of those additional numbers (i.e, 31,14 and 4)
+31 - 11111
+14 - 1110
+4 - 100
+
+Ummm, I feel something is getting subtracted from a nicer value. Let's see.
+
+31 = 2^5 - 1
+14 = 2^4 - 2
+4  = 2^3 - 4
+
+![Evil racoon reaction](https://i.imgflip.com/1bc13p.jpg)
+
+Let's verify this pattern for n=6, where we had 63+15 and 78+6
+15 = 2^4 - 1
+6 = 2^3 - 2
+
+Let's look for n=5, where we had 31+7 and 38+2
+7 = 2^3 - 1
+2 = 2^2 - 2
+
+
+So, For n>1 in general, the count values are
+
+```
+----------------------------------------------------------------
+| 2^n-1 | p+2^(y) - 2^0 | p+2^(y-1) - 2^1 | p+2^(y-2) - 2^2|...
+----------------------------------------------------------------
+```
+where,
+ p is previous box value
+ y starts from n-2 and decremented by 1 afterwards
+
+
+
+When to stop calculating the count values? Well, Look at above examples and notice it stops in the middle and repeats itself. (as if, a mirror is kept at the center)
+
+```
+Let's take n=10 and verify.
+
+2^10-1 = 1023
+p + 2^(y) - 2^0   = 1023 + 2^(n-2) - 1   = 1278
+p + 2^(y-1) - 2^1 = 1278 + 2^(n-2-1) - 2 = 1404
+p + 2^(y-2) - 2^2 = 1404 + 2^(n-2-2) - 4 = 1464
+p + 2^(y-4) - 2^3 = 1464 + 2^(n-2-3) - 8 = 1488
+
+Let's stop here it'll repeat in reverse order.
+
+```
+
+After counting these values all one has to do is multiply each value with respective input array value.
+
+
+But, How the **** to implement this?. 
+In python, it was easy, because, it has this `pow` function that takes cares of modular arithmetic.
+
+`Pow(x,y,mod) = (x^y)%mod`. To store count values one can use a list, max space taken in worst case
+is 10^6 /2 = 500000 and that's alright.
