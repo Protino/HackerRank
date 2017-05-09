@@ -1,0 +1,16 @@
+2
+2 1 1
+Q B 1
+P B 3
+Q A 4
+9 1 6
+R A 1
+R B 1
+Q C 3
+N C 3
+N D 2
+B D 1
+B B 3
+P D 3
+P C 3
+Q C 4

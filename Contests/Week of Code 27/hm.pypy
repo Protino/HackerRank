@@ -1,0 +1,79 @@
+#hackonacci(n) = 1*h(n-1)+2*hackonacci(n-2)+3.hackonacci(n-3)
+import time
+from random import randint as r
+
+def rotate(m,d):
+    for __ in range(d):
+        m=list(zip(*m[::-1]))
+    return m
+
+def difference(x,y):
+    return sum([sum([x^y for x,y in zip(i,j)]) for i,j in zip(x,y)])
+    
+def gethackonacci():
+    #X-even Y-ODD
+    #X-1 Y-0
+    h=[1,2,3]
+    for i in range(3,21):
+        h.append(h[i-1]+2*h[i-2]+3*h[i-3])
+    
+    return [(0,1)[i%2==0] for i in h]
+
+def getmatrix(n):
+    return [[h[(((i*j)**2)%21)-1] for i in range(1,n+1)]for j in range(1,n+1)]
+
+def solve(n,q,rot):
+    m=getmatrix(n)
+    #for __ in range(q):
+     #   rot.append(int(input())//90)
+    four_rotations = []
+    for i in range(1,4):
+        four_rotations.append(difference(m,rotate(m,i)))
+    four_rotations.append(0)
+
+    res=[str(four_rotations[r%4]) for r in rot]
+    print ('\n'.join(res))
+    
+
+def main():
+    #n,q=map(int,input().split())
+    rot=[[90,270,180,360][r(0,3)]*r(1,278) for i in range(10**4)]
+    start=time.clock()
+    n,q = 1003,10**4
+    solve(n,q,rot)
+    print (time.clock()-start)
+
+def test_bytes():
+    s=[[100000,100000,100000] for i in range(100,2000)]
+    with open("values", "w") as text_file:
+        text_file.write(" ".join(map(str, s)))
+            
+
+def hack():
+    results=[]
+    prev=[4930,4426,4930]
+    for i in range(101,2001):
+        print (i)
+        m=getmatrix(i)
+        rots = []
+        for j in range(1,4):
+            rots.append(difference(m,rotate(m,j)))
+        results.append([[x-y]for x,y in zip(prev,rots)])
+        prev=rots
+        #resuls.append(four_rotations)
+    with open("values", "w") as text_file:
+        text_file.write(" ".join(map(str, results)))
+    
+    
+if __name__=="__main__":
+    h=gethackonacci()
+    #hack()
+    main()
+    #test_bytes()
+    
+             
+
+
+    
+    
+    

@@ -1,5 +1,6 @@
 from collections import defaultdict
-from copy import deepcopy
+import copy
+import time
 
 class Player:
     def __init__(self,color):
@@ -30,8 +31,12 @@ def input_board():
     board = [['']*4 for __ in range(4)]
     white = Player('W')
     black = Player('B')
-    
-    w,b,m = map(int,input().split())
+    try:
+        s=input()
+        w,b,m = map(int,s.split())
+    except:
+        print (s)
+        
     for __ in range(w):
         piece, col, row = map(str,input().split())
         if col=='A':
@@ -400,9 +405,14 @@ def analyse(state):
         else:
             return 'B'
     else:
-        tboard=deepcopy(state.mboard)
-        tplayer=deepcopy(state.player)
-        topp=deepcopy(state.opp)
+        tboard=[[x for x in y] for y in state.mboard]
+        tplayer=Player(state.player.color)
+        tplayer.pieces=dict.copy(state.player.pieces)
+        tplayer.minor_count = dict.copy(state.player.minor_count)
+        
+        topp=Player(state.opp.color)
+        topp.pieces=dict.copy(state.opp.pieces)
+        topp.minor_count = dict.copy(state.opp.minor_count)
 
         #check if winning move is possible
         death = under_attack(topp, tboard)
@@ -423,9 +433,10 @@ def analyse(state):
                         tplayer.pieces[key]=(move[1],move[2])
                         break
                 if under_attack(tplayer,tboard)[0]:   
-                    tboard=deepcopy(state.mboard)
-                    tplayer=deepcopy(state.player)
-                    #topp=deepcopy(state.opp)
+                    tboard=[[x for x in y]for y in state.mboard]
+                    tplayer=Player(state.player.color)
+                    tplayer.pieces=dict.copy(state.player.pieces)
+                    tplayer.minor_count = dict.copy(state.player.minor_count)
                     continue
                 
                 promotions =[None] # by default
@@ -441,7 +452,9 @@ def analyse(state):
                     if move[0]=="#":
                         next_move='x'
                 if promotions[0]!=None:
-                    promo_player = deepcopy(tplayer)
+                    promo_player=Player(tplayer.color)
+                    promo_player.pieces=dict.copy(tplayer.pieces)
+                    promo_player.minor_count = dict.copy(tplayer.minor_count)
                 #remove pawn from the board and change it to promotions one byone
                 for promotion in promotions:
                     if promotion != None:
@@ -462,26 +475,94 @@ def analyse(state):
                     if analyse(State(topp,tplayer, getAllValidMoves(topp,tboard), tboard, state.m-1)) == tplayer.color:
                         return state.player.color
                     else:
-                        tboard=deepcopy(state.mboard)
+                        tboard=[[x for x in y]for y in state.mboard]
                         if next_move=='x':
-                            topp=deepcopy(state.opp)
+                            topp=Player(state.opp.color)
+                            topp.pieces=dict.copy(state.opp.pieces)
+                            topp.minor_count = dict.copy(state.opp.minor_count)
+                            
                         if promotion!=None:
-                            tplayer=deepcopy(promo_player)
-                tplayer=deepcopy(state.player)    
+                            tplayer=Player(promo_player.color)
+                            tplayer.pieces=dict.copy(promo_player.pieces)
+                            tplayer.minor_count = dict.copy(promo_player.minor_count)
+                tplayer=Player(state.player.color)
+                tplayer.pieces=dict.copy(state.player.pieces)
+                tplayer.minor_count = dict.copy(state.player.minor_count)
                             
 
 
         #if state.player.color=='B':state.printState() 
         return state.opp.color
-for __ in range(int(input())):
-    input_board()
+n=int(input())
+start=time.clock()
+res=''
+for __ in range(n):
+    try:
+        input_board()
+    except:
+        break
     #print (getAllValidMoves(white,board))
     if m==1:
         if under_attack(black,board)[0]:
-            print ('YES')
+            res+='YES\n'
         else:
-            print ('NO')
+            res+='NO\n'
         continue
     state = State(white,black,getAllValidMoves(white,board), board,m)
-    print ('YES' if analyse(state) == 'W' else 'NO')
-    
+    res+=('YES\n' if analyse(state) == 'W' else 'NO\n')
+
+print (res)
+print (time.clock()-start)
+
+
+
+
+
+'''
+analyse(state):
+  if moves_remaining == 1:
+     if opponent_under_attack():
+        return player_color
+     else:
+        return black_wins #This is no true no matter what
+  else:
+     saved_state = copy(state)
+     
+     #check if winning move is possible again
+     if opponent_under_attack()
+        return player_color
+     for move in available_moves():
+        
+        make_the_move()
+        update_the_state()
+            
+        if player_under_attack:
+           #this is to check if player
+           #has got his own queen killed
+
+           #if that's the case recopy the saved state
+           state = copy(saved_state)
+           continue
+
+        promotions = [None]
+            
+        if move == promotion_move:   #depends on your implementation
+           #loop the below statements thrice with N B R
+           promotion = ['R','B','N']
+            
+        for promotion in promotions:
+           if promotion != None:  #regular move if None
+              update_the_state_with_promotion()
+                    
+           if a_kill_move:
+              update_opponents_pieces
+                    
+           if analyse(changed_state) == player:  
+              return player_color
+           else:
+              #that was a bad move so recopy
+              state = copy(saved_state)  
+
+   #if all moves are bad moves then opponenet wins
+   return opponent_color
+'''

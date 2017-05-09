@@ -1,7 +1,5 @@
 import math
-import time
-
-def p(n): #SO say its a fake sieve, meh, it's fast
+def fake_sieve(n): #SO say its a fake sieve, meh, it's fast
     np1 = n + 1
     s = list(range(np1))
     s[1] = 0
@@ -9,14 +7,11 @@ def p(n): #SO say its a fake sieve, meh, it's fast
     for i in range(2, sqrtn + 1):
         if s[i]:
             s[i*i: np1: i] = [0] * len(range(i*i, np1, i))
-    return list(filter(None, s))
-'''
-Returns all the primes between a and b inclusive.
-'''
+    return filter(None, s)
 
-def segmented_sieve(a,b):
+def primes(a,b):
     limit = int(round(math.sqrt(b)))
-    base_primes = p(limit)
+    base_primes = list(fake_sieve(limit))
     s = [True]*(b-a+1)
 
     for prime in base_primes:
@@ -39,19 +34,13 @@ def segmented_sieve(a,b):
                 return primes
     return primes
 
-    
-def test(a,b,n):
-    for i in a:
-        if i>=n:
-            i=a.index(i)
-            return True if (a[i:]==b) else False    
-    else:
-        return False
-
-def main(n,m):
-    a=list(p(m))
-    b=segmented_sieve(n,m)
-    print (test(a,b,n))
-
-main(10,10000)
-
+n,m=map(int,input().split())
+n=n+1 if n==1 else n
+data=primes(n,m)
+base=data[0]
+count=0
+for prime in data:
+    if base+2==prime:
+        count+=1
+    base=prime
+print (count)
